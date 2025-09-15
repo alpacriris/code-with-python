@@ -117,13 +117,13 @@ El resultado de la ejecución muestra la conexión al broker y la publicación p
 ```bash
 $ python sipub.py
 publishing:  99
-msg published (mid=1)
+sipub: msg published (mid=1)
 connected to  test.mosquitto.org port:  1883
 flags:  {'session present': 0} returned code:  0
 publishing:  43
-msg published (mid=2)
+sipub: msg published (mid=2)
 publishing:  69
-msg published (mid=3)
+sipub: msg published (mid=3)
 ...
 ```
 
@@ -155,13 +155,13 @@ Modifica `sisub.py` para poder recibir los datos enviados por `sipub.py`.
     ```bash
     $ python sipub.py
     publishing:  40
-    msg published (mid=1)
+    sipub: msg published (mid=1)
     connected to  test.mosquitto.org port:  1883
     flags:  {'session present': 0} returned code:  0
     publishing:  93
-    msg published (mid=2)
+    sipub: msg published (mid=2)
     publishing:  23
-    msg published (mid=3)
+    sipub: msg published (mid=3)
     publishing:  87
     ...
     ```
@@ -175,14 +175,14 @@ Usando el código de la Pregunta 3, configura como topic del “subscriber” el
 
 ### Solución:
 
-1. Modifica el *subscriber* para suscribirse al nuevo topic:
+1. Modifica el *subscriber* para suscribirse al nuevo topic "Spain/Vlc/Code":
 
     ```python
     THE_TOPIC = "Spain/Vlc/Code"
     client.subscribe(THE_TOPIC, qos=0)
     ```
 
-2. Modifica el *publisher* para publicar en el mismo topic:
+2. Modifica el *publisher* para publicar en el topic "spain/vlc/code":
 
     ```python
     THE_TOPIC = "spain/vlc/code"
@@ -198,17 +198,17 @@ Usando el código de la Pregunta 3, configura como topic del “subscriber” el
     ```
 
     ```bash
-    $ python3 sipub.py
+    $ python sipub.py
     publishing:  75
-    msg published (mid=1)
+    sipub: msg published (mid=1)
     connected to  test.mosquitto.org port:  1883
     flags:  {'session present': 0} returned code:  0
     publishing:  79
-    msg published (mid=2)
+    sipub: msg published (mid=2)
     publishing:  24
-    msg published (mid=3)
+    sipub: msg published (mid=3)
     publishing:  14
-    msg published (mid=4)
+    sipub: msg published (mid=4)
     publishing:  6
     ...
     ```
@@ -228,11 +228,97 @@ Prueba los siguientes pasos:
 
 - Publica varios mensajes (diferentes) con la opcion de retain a “True” antes de activar el “subscriber”.
 
+### Solución:
+
+- Publica un mensaje con la opcion de retain a “False”. ¿Qué recibe el “subscriber”?
+
+    ```python
+    msg1 = "1: Never Mind."
+    client.publish(THE_TOPIC, payload=msg1, qos=0, retain=False)
+    ```
+
+    Al ejecutar:
+
+    ```bash
+    $ python sipub.py
+    sipub: msg published (mid=1)
+    connected to  test.mosquitto.org port:  1883
+    flags:  {'session present': 0} returned code:  0        
+    sipub: msg published (mid=1)
+    ```
+    ```bash
+    $ python sisub.py
+    connected to  test.mosquitto.org port:  1883
+    flags:  {'session present': 0} returned code:  0
+    ```
+
+    - El mensaje **no se almacena** en el broker.
+
+    - Los `subscribers` que se conecten después de la publicación **no recibirán** este mensaje.
+
+- Publica un mensaje con la opcion de retain a “True”. ¿Qué recibe el “subscriber”?
+
+    ```python
+    msg1 = "1: Never Mind."
+    client.publish(THE_TOPIC, payload=msg1, qos=0, retain=True)
+    ```
+
+    ```bash
+    $ python sipub.py
+    sipub: msg published (mid=1)
+    connected to  test.mosquitto.org port:  1883
+    flags:  {'session present': 0} returned code:  0        
+    sipub: msg published (mid=1)
+    ```
+    ```
+    $ python sisub.py
+    connected to  test.mosquitto.org port:  1883
+    flags:  {'session present': 0} returned code:  0
+    message received with topic: nevermind and payload: b'1: Never Mind.'
+    ```
+
+    En este caso, el mensaje **sí se ha almacenado** en el broker, por lo que el subscriber recibe correctamente el mensaje retenido.
+
+- Publica varios mensajes (diferentes) con la opcion de retain a “True” antes de activar el “subscriber”.
+
+    Esta vez publicamos cuatro mensajes:
+
+    ```python
+    msg1 = "1: Never Mind."
+    msg2 = "2: Never Mind."
+    msg3 = "3: Never Mind."
+    msg4 = "4: Never Mind."
+    client.publish(THE_TOPIC, payload=msg1, qos=0, retain=True)
+    client.publish(THE_TOPIC, payload=msg2, qos=0, retain=True)
+    client.publish(THE_TOPIC, payload=msg3, qos=0, retain=True)
+    client.publish(THE_TOPIC, payload=msg4, qos=0, retain=True)
+    ```
+
+    ```bash
+    $ python sipub.py
+    sipub: msg published (mid=1)
+    connected to  test.mosquitto.org port:  1883
+    flags:  {'session present': 0} returned code:  0        
+    sipub: msg published (mid=1)
+    sipub: msg published (mid=2)
+    sipub: msg published (mid=3)
+    sipub: msg published (mid=4)
+    ```
+    ```
+    $ python sisub.py
+    connected to  test.mosquitto.org port:  1883
+    flags:  {'session present': 0} returned code:  0
+    message received with topic: nevermind and payload: b'4: Never Mind.'
+    ```
+
+    Al conectarse, el suscriptor recibe únicamente **el último mensaje** publicado, ya que solo se retiene un mensaje por topic; los mensajes anteriores se sobrescriben.
+
 ---
 
 ## 6. Aplicación de chat muy básica
 
 Crea una aplicación de chat muy básica, donde todos los mensajes publicados de cualquiera de los miembros sean recibidos solo por los miembros del grupo.
+
 
 ---
 

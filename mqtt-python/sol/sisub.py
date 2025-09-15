@@ -7,8 +7,8 @@ import paho.mqtt.client as mqtt
 THE_BROKER = "test.mosquitto.org"
 #THE_TOPIC = "$SYS/#"           # 1. subscribe to all topics
 #THE_TOPIC = "Alpaca/Code"      # 3. subscribe to the topic to which we publish
-THE_TOPIC = "Spain/Vlc/Code"    # 4. subscribe to the topic "Spain/Vlc/Code"
-#THE_TOPIC = "nevermind"        # 5. subscribe to the topic "nevermind"
+#THE_TOPIC = "Spain/Vlc/Code"    # 4. subscribe to the topic "Spain/Vlc/Code"
+THE_TOPIC = "nevermind"        # 5. subscribe to the topic "nevermind"
 CLIENT_ID = ""
 
 # The callback for when the client receives a CONNACK response from the server.
