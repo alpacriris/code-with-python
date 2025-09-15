@@ -54,6 +54,7 @@ Ejecuta `sisub.py` y explica el resultado obtenido.
 El resultado de la ejecución muestra de manera continua los mensajes recibidos al suscribirse a una serie de topics:
     
 ```bash
+$ python sisub.py
 connected to  test.mosquitto.org port:  1883
 flags:  {'session present': 0} returned code:  0
 message received with topic: $SYS/broker/bytes/received and payload:
@@ -95,7 +96,7 @@ Ejecuta `sipub.py` y explica el resultado obtenido.
     client.loop_start()
     ```
 
-4. En un bucle infinito, se genera un número aleatorio entre 0 y 100 y se publica cada segundo en el *topic* `Alpaca/Code`:  
+4. En un bucle infinito, se genera un número aleatorio entre 0 y 100 y se publica cada segundo en el topic `Alpaca/Code`:  
     ```python
     while True:
         msg_to_be_sent = random.randint(0, 100)
@@ -114,6 +115,7 @@ Ejecuta `sipub.py` y explica el resultado obtenido.
 El resultado de la ejecución muestra la conexión al broker y la publicación periódica de mensajes:  
 
 ```bash
+$ python sipub.py
 publishing:  99
 msg published (mid=1)
 connected to  test.mosquitto.org port:  1883
@@ -129,7 +131,41 @@ msg published (mid=3)
 
 ## 3. Modificar `sisub.py`
 
-Modifica `sisub.py` para poder recibir los datos por `sipub.py`.
+Modifica `sisub.py` para poder recibir los datos enviados por `sipub.py`.
+
+### Solución
+
+1. **Suscribirse al mismo topic** que usa `sipub.py`. Debe coincidir con el topic usado en `sipub.py`:
+
+    ```python
+    THE_TOPIC = "Alpaca/Code"
+    client.subscribe(THE_TOPIC, qos=0)
+    ``` 
+2. Ejecutar ambos programas (primero `sisub.py` y luego `sipub.py`):
+
+    ```bash
+    $ python sisub.py
+    connected to  test.mosquitto.org port:  1883
+    flags:  {'session present': 0} returned code:  0
+    message received with topic: Alpaca/Code and payload: b'40'
+    message received with topic: Alpaca/Code and payload: b'93'
+    ...
+    ```
+
+    ```bash
+    $ python sipub.py
+    publishing:  40
+    msg published (mid=1)
+    connected to  test.mosquitto.org port:  1883
+    flags:  {'session present': 0} returned code:  0
+    publishing:  93
+    msg published (mid=2)
+    publishing:  23
+    msg published (mid=3)
+    publishing:  87
+    ...
+    ```
+El suscriptor recibe correctamente los mensajes publicados por el publicador en el topic `Alpaca/Code`. Esto demuestra que `sisub.py` está recibiendo todos los mensajes enviados por `sipub.py`.
 
 ---
 
