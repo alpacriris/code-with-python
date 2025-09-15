@@ -360,6 +360,37 @@ El archivo [`chat.py`](./chat.py) implementa un chat simple utilizando MQTT.
 
 - Todos los mensajes publicados en el topic son recibidos por cada suscriptor activo en tiempo real.
 
+Si suponemos dos miembros en el grupo y para cada uno ejecutamos el `chat.py` anterior:
+        
+```bash
+$ python chat.py
+Connected to test.mosquitto.org  port:  1883
+Tell me your nickname: alvaro
+----------------------------------------------
+Welcome alvaro ! You can start chatting now!
+----------------------------------------------
+someone there?
+alvaro: someone there?
+cristina: hi!
+hello cristina!
+alvaro: hello cristina!
+cristina: nice to meet you!
+```
+
+```bash
+$ python chat.py
+Connected to test.mosquitto.org  port:  1883
+Tell me your nickname: cristina
+----------------------------------------------
+Welcome cristina ! You can start chatting now!
+----------------------------------------------
+alvaro: someone there?
+hi!
+cristina: hi!
+alvaro: hello cristina!
+nice to meet you!
+cristina: nice to meet you!
+```
 ---
 
 ## 7. App TTN JSON
