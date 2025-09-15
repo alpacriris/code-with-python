@@ -25,15 +25,15 @@ Modifica `sisub.py` para poder recibir los datos por `sipub.py`.
 
 Usando el código de la Pregunta 3, configura como topic del “subscriber” el valor Spain/Vlc/Code y ejecútalo. A continuación, modifica el código del “publisher” para que utilice el topic spain/vlc/code y como mensaje el texto que desees. Luego, ejecuta el “publisher”.
 
-### 5. Opción `retained`
+### 5. Opción `retain`
 
 Prueba los siguientes pasos:
 
-- Publica un mensaje con la opcion de retained a “False”. ¿Qué recibe el “subscriber”?
+- Publica un mensaje con la opcion de retain a “False”. ¿Qué recibe el “subscriber”?
 
-- Publica un mensaje con la opcion de retained a “True”. ¿Qué recibe el “subscriber”?   
+- Publica un mensaje con la opcion de retain a “True”. ¿Qué recibe el “subscriber”?   
 
-- Publica varios mensajes (diferentes) con la opcion de retained a “True” antes de activar el “subscriber”.
+- Publica varios mensajes (diferentes) con la opcion de retain a “True” antes de activar el “subscriber”.
     
 ### 6. Aplicación de chat muy básica
 

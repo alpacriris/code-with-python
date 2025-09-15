@@ -1,4 +1,4 @@
-# code-with-python
+# python-learning
 Repositorio con ejemplos y prácticas de programación en Python.
 
 ## Índice
@@ -11,6 +11,6 @@ Repositorio con ejemplos y prácticas de programación en Python.
 
 Prácticas con **MQTT y Python** usando [*test.mosquitto.org*](http://test.mosquitto.org/):  
 - Publicación y suscripción a *topics*  
-- Uso de la opción `retained`  
+- Uso de la opción `retain`  
 - Creación de un chat en grupo  
 - Integración con **TTN** para recibir mensajes en JSON 

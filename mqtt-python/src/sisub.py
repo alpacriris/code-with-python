@@ -5,7 +5,7 @@
 import paho.mqtt.client as mqtt
 
 THE_BROKER = "test.mosquitto.org"
-THE_TOPIC = "$SYS/#" # subscribe to all topics
+THE_TOPIC = "Alpaca/Code" # subscribe to all topics
 CLIENT_ID = ""
 
 def on_connect(client, userdata, flags, rc):

@@ -8,9 +8,9 @@ import time
 import paho.mqtt.client as mqtt
 
 THE_BROKER = "test.mosquitto.org"
-#THE_TOPIC = "Alpaca/Code"          # 2. publish to this topic
+THE_TOPIC = "Alpaca/Code"          # 2. publish to this topic
 #THE_TOPIC = "spain/vlc/code"        # 4. publish to the topic "spain/vlc/code" 
-THE_TOPIC = "nevermind"             # 5. publish to the topic "nevermind"
+#THE_TOPIC = "nevermind"             # 5. publish to the topic "nevermind"
 
 CLIENT_ID = ""
 
@@ -35,31 +35,30 @@ client.on_publish = on_publish
 client.username_pw_set(None, password=None)
 client.connect(THE_BROKER, port=1883, keepalive=60)
 
-
-# 5. publish several messages with retain=True
-msg1 = "1: Never Mind."
-msg2 = "2: Never Mind."
-msg3 = "3: Never Mind."
-msg4 = "4: Never Mind."
-client.publish(THE_TOPIC, payload=msg1, qos=0, retain=False)
+# # 5. publish several messages with retain=True
+# msg1 = "1: Never Mind."
+# msg2 = "2: Never Mind."
+# msg3 = "3: Never Mind."
+# msg4 = "4: Never Mind."
+# client.publish(THE_TOPIC, payload=msg1, qos=0, retain=False)
 # client.publish(THE_TOPIC, payload=msg2, qos=0, retain=True)
 # client.publish(THE_TOPIC, payload=msg3, qos=0, retain=True)
 # client.publish(THE_TOPIC, payload=msg4, qos=0, retain=True)
-# end of 5.
+# #end of 5.
 
-# client.loop_start()
+client.loop_start()
 
-# while True:
+while True:
 
-#     msg_to_be_sent = random.randint(0, 100) 
-#     print("publishing: ", msg_to_be_sent) 
-#     client.publish(THE_TOPIC, 
-#                    payload=msg_to_be_sent, 
-#                    qos=0, 
-#                    retain=False)      
+    msg_to_be_sent = random.randint(0, 100) 
+    print("publishing: ", msg_to_be_sent) 
+    client.publish(THE_TOPIC, 
+                   payload=msg_to_be_sent, 
+                   qos=0, 
+                   retain=False)      
     
-#     time.sleep(1)
+    time.sleep(1)
 
-# client.loop_stop()
+client.loop_stop()
 
 client.disconnect()

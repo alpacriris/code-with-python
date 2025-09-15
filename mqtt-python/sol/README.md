@@ -7,7 +7,7 @@ Práctica de Python centrada en el uso de MQTT para comunicación entre clientes
 2. [Ejecuta `sipub.py`](#2-ejecuta-sipubpy)
 3. [Modificar `sisub.py`](#3-modificar-sisubpy)
 4. [Configurar topics](#4-configurar-topics)
-5. [Opción `retained`](#5-opción-retained)
+5. [Opción `retain`](#5-opción-retain)
 6. [Aplicación de chat muy básica](#6-aplicación-de-chat-muy-básica)
 7. [App TTN JSON](#7-app-ttn-json)
 
@@ -68,6 +68,63 @@ b'14649543471842
 
 Ejecuta `sipub.py` y explica el resultado obtenido.
 
+### Solución:
+1. El cliente se conecta al broker [*test.mosquitto.org*](http://test.mosquitto.org/) y se prepara para enviar mensajes al *topic* definido:  
+    ```python
+    THE_BROKER = "test.mosquitto.org"
+    THE_TOPIC = "Alpaca/Code"
+    client.connect(THE_BROKER, port=1883, keepalive=60)
+    ```
+
+2. Se definen dos funciones de *callback* para manejar los eventos:  
+    ```python
+    def on_connect(client, userdata, flags, rc):
+        # Se ejecuta al conectarse al broker
+        ...
+
+    def on_publish(client, userdata, mid):
+        # Se ejecuta al publicar un mensaje
+        ...
+    ```
+
+    - **`on_connect`**: confirma la conexión con el broker.  
+    - **`on_publish`**: indica que un mensaje ha sido publicado correctamente.  
+
+3. Se activa el bucle del cliente para gestionar la comunicación en segundo plano:  
+    ```python
+    client.loop_start()
+    ```
+
+4. En un bucle infinito, se genera un número aleatorio entre 0 y 100 y se publica cada segundo en el *topic* `Alpaca/Code`:  
+    ```python
+    while True:
+        msg_to_be_sent = random.randint(0, 100)
+        print("publishing: ", msg_to_be_sent)
+        client.publish(THE_TOPIC,
+                       payload=msg_to_be_sent,
+                       qos=0,
+                       retain=True)
+        time.sleep(1)
+    ```
+
+    - `random.randint(0, 100)`: genera el número aleatorio.  
+    - `retain=True`: el último mensaje queda almacenado en el broker.  
+    - `time.sleep(1)`: envía mensajes con un intervalo de 1 segundo.  
+
+El resultado de la ejecución muestra la conexión al broker y la publicación periódica de mensajes:  
+
+```bash
+publishing:  99
+msg published (mid=1)
+connected to  test.mosquitto.org port:  1883
+flags:  {'session present': 0} returned code:  0
+publishing:  43
+msg published (mid=2)
+publishing:  69
+msg published (mid=3)
+...
+```
+
 ---
 
 ## 3. Modificar `sisub.py`
@@ -82,15 +139,15 @@ Usando el código de la Pregunta 3, configura como topic del “subscriber” el
 
 ---
 
-## 5. Opción `retained`
+## 5. Opción `retain`
 
 Prueba los siguientes pasos:
 
-- Publica un mensaje con la opcion de retained a “False”. ¿Qué recibe el “subscriber”?
+- Publica un mensaje con la opcion de retain a “False”. ¿Qué recibe el “subscriber”?
 
-- Publica un mensaje con la opcion de retained a “True”. ¿Qué recibe el “subscriber”?   
+- Publica un mensaje con la opcion de retain a “True”. ¿Qué recibe el “subscriber”?   
 
-- Publica varios mensajes (diferentes) con la opcion de retained a “True” antes de activar el “subscriber”.
+- Publica varios mensajes (diferentes) con la opcion de retain a “True” antes de activar el “subscriber”.
 
 ---
 
