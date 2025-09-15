@@ -173,6 +173,49 @@ El suscriptor recibe correctamente los mensajes publicados por el publicador en 
 
 Usando el código de la Pregunta 3, configura como topic del “subscriber” el valor Spain/Vlc/Code y ejecútalo. A continuación, modifica el código del “publisher” para que utilice el topic spain/vlc/code y como mensaje el texto que desees. Luego, ejecuta el “publisher”.
 
+### Solución:
+
+1. Modifica el *subscriber* para suscribirse al nuevo topic:
+
+    ```python
+    THE_TOPIC = "Spain/Vlc/Code"
+    client.subscribe(THE_TOPIC, qos=0)
+    ```
+
+2. Modifica el *publisher* para publicar en el mismo topic:
+
+    ```python
+    THE_TOPIC = "spain/vlc/code"
+    client.publish(THE_TOPIC, payload=msg_to_be_sent, qos=0, retain=True)
+    ```
+
+3. Ejecutamos primero el *subscriber* y luego el *publisher*:
+
+    ```bash
+    $ python sisub.py
+    connected to  test.mosquitto.org port:  1883
+    flags:  {'session present': 0} returned code:  0
+    ```
+
+    ```bash
+    $ python3 sipub.py
+    publishing:  75
+    msg published (mid=1)
+    connected to  test.mosquitto.org port:  1883
+    flags:  {'session present': 0} returned code:  0
+    publishing:  79
+    msg published (mid=2)
+    publishing:  24
+    msg published (mid=3)
+    publishing:  14
+    msg published (mid=4)
+    publishing:  6
+    ...
+    ```
+
+El *subscriber* no recibe ningún mensaje publicado por el *publisher*, puesto que **los topics distinguen entre mayúsculas y minúsculas**.
+Esto significa que el *subscriber* no está suscrito al topic correcto.
+
 ---
 
 ## 5. Opción `retain`

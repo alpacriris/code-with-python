@@ -8,8 +8,8 @@ import time
 import paho.mqtt.client as mqtt
 
 THE_BROKER = "test.mosquitto.org"
-THE_TOPIC = "Alpaca/Code"          # 2. publish to this topic
-#THE_TOPIC = "spain/vlc/code"        # 4. publish to the topic "spain/vlc/code" 
+#THE_TOPIC = "Alpaca/Code"          # 2. publish to this topic
+THE_TOPIC = "spain/vlc/code"        # 4. publish to the topic "spain/vlc/code" 
 #THE_TOPIC = "nevermind"             # 5. publish to the topic "nevermind"
 
 CLIENT_ID = ""
