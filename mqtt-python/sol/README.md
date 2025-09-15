@@ -1,6 +1,6 @@
 # Prácticas MQTT con Python
 
-Práctica de Python centrada en el uso de MQTT para comunicación entre clientes y publicación/suscripción a topics.
+Práctica de Python centrada en el uso de MQTT para comunicación entre clientes y publicación/suscripción a *topics*.
 
 ## Índice
 1. [Ejecuta `sisub.py`](#1-ejecuta-sisubpy)
@@ -70,7 +70,7 @@ b'14649543471842
 Ejecuta `sipub.py` y explica el resultado obtenido.
 
 ### Solución:
-1. El cliente se conecta al broker [*test.mosquitto.org*](http://test.mosquitto.org/) y se prepara para enviar mensajes al *topic* definido:  
+1. El cliente se conecta al broker [*test.mosquitto.org*](http://test.mosquitto.org/) y se prepara para enviar mensajes al topic definido:  
     ```python
     THE_BROKER = "test.mosquitto.org"
     THE_TOPIC = "Alpaca/Code"
@@ -175,14 +175,14 @@ Usando el código de la Pregunta 3, configura como topic del “subscriber” el
 
 ### Solución:
 
-1. Modifica el *subscriber* para suscribirse al nuevo topic "Spain/Vlc/Code":
+1. Modifica el *subscriber* para suscribirse al nuevo topic `Spain/Vlc/Code`:
 
     ```python
     THE_TOPIC = "Spain/Vlc/Code"
     client.subscribe(THE_TOPIC, qos=0)
     ```
 
-2. Modifica el *publisher* para publicar en el topic "spain/vlc/code":
+2. Modifica el *publisher* para publicar en el topic `spain/vlc/code`:
 
     ```python
     THE_TOPIC = "spain/vlc/code"
@@ -319,6 +319,46 @@ Prueba los siguientes pasos:
 
 Crea una aplicación de chat muy básica, donde todos los mensajes publicados de cualquiera de los miembros sean recibidos solo por los miembros del grupo.
 
+### Solución:
+
+El archivo [`chat.py`](./chat.py) implementa un chat simple utilizando MQTT.  
+
+1. Se define el broker y el topic de comunicación:  
+    ```python
+    THE_BROKER = "test.mosquitto.org"
+    THE_TOPIC = "rse/chat"
+    ```
+
+2. Al conectarse, cada usuario introduce su nickname y se suscribe al topic:  
+    ```python
+    def on_connect(client, userdata, flags, rc):
+        global CLIENT_NAME
+        client.subscribe(THE_TOPIC, qos=0)
+        CLIENT_NAME = input("Tell me your nickname: ")
+    ```
+
+3. La función `on_message` recibe los mensajes publicados por otros miembros:  
+    ```python
+    def on_message(client, userdata, msg):
+        print(msg.payload.decode("utf-8"))
+    ```
+
+4. El bucle principal permite enviar mensajes al grupo, con el nickname del remitente:  
+    ```python
+    msg = input("")
+    client.publish(THE_TOPIC, payload=f"{CLIENT_NAME}: {msg}", qos=0, retain=False)
+    ```
+
+#### Explicación:
+- Cada usuario se suscribe al topic `rse/chat` y recibe los mensajes publicados por otros.
+
+- El nickname `CLIENT_NAME` se añade al mensaje publicado para identificar al remitente.
+
+- La opción `retain=False` asegura que los mensajes no se guarden en el broker para futuras conexiones.
+
+- Se utiliza un bucle infinito junto con `input()` para permitir la entrada continua de mensajes.
+
+- Todos los mensajes publicados en el topic son recibidos por cada suscriptor activo en tiempo real.
 
 ---
 
