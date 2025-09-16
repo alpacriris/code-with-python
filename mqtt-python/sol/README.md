@@ -396,3 +396,96 @@ cristina: nice to meet you!
 ## 7. App TTN JSON
 
 Crea una aplicacion en python utilizando el cliente mqtt-explorer leemos datos desde TTN. En este caso es suficiente imprimir todo el JSON que llega. 
+
+### Solución:
+
+En este ejemplo se implementa un cliente MQTT que se conecta al broker de **The Things Network (TTN)** para recibir mensajes de los dispositivos registrados y mostrarlos en formato JSON. El código completo se encuentra en [`ttn_sub.py`](./ttn_sub.py).
+
+1. Se definen las credenciales y parámetros de conexión en un diccionario:
+
+    ```python
+    mqtt_options = {
+        "broker": "eu1.cloud.thethings.network",
+        "username": "mi-aplicacion@ttn",
+        "password": "NNSXS.xxxxxxxx",
+        "topic": "v3/+/devices/#"
+    }
+    ```
+
+2. La función `on_connect` se ejecuta al establecer la conexión y suscribe al topic definido:
+    ```python
+    def on_connect(client, userdata, flags, rc):
+        client.subscribe(mqtt_options["topic"])
+    ```
+3. La función `on_message` imprime los mensajes recibidos en formato JSON legible:
+    ```python
+    def on_message(client, userdata, msg):
+        payload = msg.payload.decode("utf-8")
+        data = json.loads(payload)
+        print(json.dumps(data, indent=4))
+    ```
+
+4. Finalmente, se configuran las credenciales, se conecta al broker y se mantiene en escucha con:
+    ```python
+    client.username_pw_set(mqtt_options["username"], mqtt_options["password"])
+    client.connect(mqtt_options["broker"])
+    client.loop_forever()
+    ```
+
+#### Explicación:
+
+- El cliente se conecta al broker de TTN y se suscribe al topic configurado para recibir mensajes de los dispositivos de la aplicación.
+
+- Cada mensaje recibido se decodifica de JSON y se muestra de forma legible en consola.
+
+- Esto permite visualizar en tiempo real los datos enviados por los dispositivos IoT registrados en TTN.
+
+- La opción `loop_forever()` mantiene activo el cliente a la espera de nuevos mensajes.
+
+Resultado de la ejecución presenta una estructura similar a:
+
+```bash
+connected to eu1.cloud.thethings.network  port: 1883
+{
+    "end_device_ids": {
+        "device_id": "example-device",
+        "application_ids": {
+            "application_id": "example-app"
+        }
+    },
+    "received_at": "2025-12-12T23:23:23Z",
+    "uplink_message": {
+        "f_port": 2,
+        "f_cnt": 4011,
+        "decoded_payload": {
+            "humidity": 56.0,
+            "lux": -17,
+            "temperature": 29.7
+        },
+        "rx_metadata": [
+            {
+                "gateway_ids": {
+                    "gateway_id": "example-gateway"
+                },
+                "rssi": -97,
+                "snr": 8.2
+            },
+            {
+                "gateway_ids": {
+                    "gateway_id": "another-gateway"
+                },
+                "rssi": -21,
+                "snr": 11
+            }
+        ],
+        "settings": {
+            "frequency": "868100000",
+            "data_rate": {
+                "lora": {
+                    "spreading_factor": 12
+                }
+            }
+        }
+    }
+}
+```
